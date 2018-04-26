@@ -25,14 +25,20 @@ client.on('error', err => console.error(err));
 app.use(cors());
 
 
-
-
 // app.get('/test', (req,res) => res.send('hello world'));
 app.get('/api/v1/books', (req,res) => {
-  client.query('SELECT * FROM books')
+  client.query('SELECT book_id, title, author, image_url FROM books')
   .then(results => res.send(results.rows))
   .catch(console.error);
 })
+
+app.get('/api/v1/books/:id'), (req,res) => {
+  client.query(`SELECT title, author, image_url FROM books WHERE id=$1`[req.params.id])
+  .then (results => res.send(results.rows[0]))
+  .catch (err => {
+    console.error(err);
+  })
+}
 
 app.get('*', (req,res) => res.redirect(CLIENT_URL));
 
