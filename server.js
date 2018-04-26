@@ -32,13 +32,14 @@ app.get('/api/v1/books', (req,res) => {
   .catch(console.error);
 })
 
-app.get('/api/v1/books/:id'), (req,res) => {
-  client.query(`SELECT title, author, image_url FROM books WHERE id=$1`[req.params.id])
+// http://localhost:3000/api/v1/books/2
+app.get('/api/v1/books/:id', (req,res) => {
+  client.query(`SELECT title, author, image_url FROM books WHERE book_id=$1`,[req.params.id])
   .then (results => res.send(results.rows[0]))
   .catch (err => {
     console.error(err);
   })
-}
+})
 
 app.get('*', (req,res) => res.redirect(CLIENT_URL));
 
