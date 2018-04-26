@@ -41,6 +41,25 @@ app.get('/api/v1/books/:id', (req,res) => {
   })
 })
 
+app.post('/api/v1/books', express.urlencoded({}) ,(req,res) => {
+  // console.log(req.body)
+  client.query(`INSERT INTO books (title, author, isbn, image_url, description)
+  VALUES ($1, $2, $3, $4, $5);`
+  ,
+      [
+        req.body.title,
+        req.body.author,
+        req.body.isbn,
+        req.body.image_url,
+        req.body.description
+      ])
+      
+        .then(res.send('insert complete'))
+        .catch(err => {
+          console.error(err)
+        });
+})
+
 app.get('*', (req,res) => res.redirect(CLIENT_URL));
 
 app.listen(PORT, () => console.log(`Listening on port: ${PORT}`));
