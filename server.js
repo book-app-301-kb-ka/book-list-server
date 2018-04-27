@@ -13,11 +13,9 @@ const CLIENT_URL = process.env.CLIENT_URL;
 // console.log(process.env.DATABASE_URL);
 // console.log(process.env.CLIENT_URL);
 
-// const client = new pg.Client(conString);
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 client.on('error', err => console.error(err));
-
 
 // app.use(express.json());
 // app.use(express.urlencoded());
@@ -26,13 +24,14 @@ app.use(cors());
 
 
 // app.get('/test', (req,res) => res.send('hello world'));
+
 app.get('/api/v1/books', (req,res) => {
   client.query('SELECT book_id, title, author, image_url FROM books')
   .then(results => res.send(results.rows))
   .catch(console.error);
 })
 
-// http://localhost:3000/api/v1/books/2
+// for comparison: http://localhost:3000/api/v1/books/2
 app.get('/api/v1/books/:id', (req,res) => {
   client.query(`SELECT title, author, image_url FROM books WHERE book_id=$1`,[req.params.id])
   .then (results => res.send(results.rows[0]))
@@ -41,7 +40,7 @@ app.get('/api/v1/books/:id', (req,res) => {
   })
 })
 
-app.post('/api/v1/books', express.urlencoded({}) ,(req,res) => {
+app.post('/api/v1/books/add', express.urlencoded({}) ,(req,res) => {
   // console.log(req.body)
   client.query(`INSERT INTO books (title, author, isbn, image_url, description)
   VALUES ($1, $2, $3, $4, $5);`
